@@ -16,7 +16,7 @@
 source ends
  .DATA
  lpFmt	db '%s',0ah,0dh,0
- lpFmt1	db '%d %d %d',0
+ lpFmt1	db '%d',0
  LOWCASE db 'Data storage area LOWF',0
  MIDCASE db 'Data storage area MIDF',0
  HIGHCASE db 'Data storage area HIGHF',0
@@ -24,9 +24,9 @@ source ends
  SDB   DD ?      ;状态信息b
  SDC   DD ?      ;状态信息c
  DATA_N DD 3
- LOWF source 3 DUP(<>)
- MIDF source 3 DUP(<>)
- HIGHF source 3 DUP(<>)
+ LOWF source 30 DUP(<>)
+ MIDF source 30 DUP(<>)
+ HIGHF source 30 DUP(<>)
  CAl_N DD 10
 
  .STACK 200
@@ -37,9 +37,9 @@ source ends
 outer_lopa:
  cmp esi,DATA_N
  jz exit
- invoke scanf,offset lpFmt1,offset SDA,offset SDB,offset SDC
- ;invoke scanf,offset lpFmt1,offset SDB
- ;invoke scanf,offset lpFmt1,offset SDC
+ invoke scanf,offset lpFmt1,offset SDA
+ invoke scanf,offset lpFmt1,offset SDB
+ invoke scanf,offset lpFmt1,offset SDC
  mov ebx,0
 inner_lopa:
  cmp ebx,CAL_N
@@ -63,53 +63,55 @@ judge proc
  sub ecx,eax
  add ecx,100
  sar ecx,7
- mov eax,ecx
- invoke printf,offset lpFmt1,ecx
- cmp eax,100
+ ;mov eax,ecx
+ ;invoke printf,offset lpFmt1,ecx
+ cmp ecx,100
  jg greater
- cmp eax,100
+ cmp ecx,100
  jl litter
- cmp eax,100
+ cmp ecx,100
  jz equal
 equal:
- push EAX
+ mov edi,offset MIDF
+ add edi,TYPE source
  mov EAX,SDA
- mov MIDF.SDA,EAX
+ mov [edi].source.SDA,EAX
  mov EAX,SDB
- mov MIDF.SDB,EAX
+ mov [edi].source.SDB,EAX
  mov EAX,SDC
- mov MIDF.SDC,EAX
+ mov [edi].source.SDC,EAX
  mov EAX,ecx
- mov MIDF.SDF,EAX
+ mov [edi].source.SDF,EAX
+ invoke printf,offset lpFmt1,[edi].source.SDF
  invoke printf,offset lpFmt,offset MIDCASE
- pop EAX
  jmp back
 greater:
+ mov edi,offset HIGHF
+ add edi,TYPE source
  mov EAX,SDA
- mov HIGHF.SDA,EAX
+ mov [edi].source.SDA,EAX
  mov EAX,SDB
- mov HIGHF.SDB,EAX
+ mov [edi].source.SDB,EAX
  mov EAX,SDC
- mov HIGHF.SDC,EAX
+ mov [edi].source.SDC,EAX
  mov EAX,ecx
- mov HIGHF.SDF,EAX
- pushad
- mov eax,offset HIGHF
- invoke printf,offset lpFmt,eax
- popad
+ mov [edi].source.SDF,EAX
+ invoke printf,offset lpFmt1,[edi].source.SDF
+ invoke printf,offset lpFmt,offset HIGHCASE
  jmp back
 litter:
- push EAX
+ mov edi,offset LOWF
+ add edi,TYPE source
  mov EAX,SDA
- mov LOWF.SDA,EAX
+ mov [edi].source.SDA,EAX
  mov EAX,SDB
- mov LOWF.SDB,EAX
+ mov [edi].source.SDB,EAX
  mov EAX,SDC
- mov LOWF.SDC,EAX
+ mov [edi].source.SDC,EAX
  mov EAX,ecx
- mov LOWF.SDF,EAX
+ mov [edi].source.SDF,EAX
+ invoke printf,offset lpFmt1,[edi].source.SDF
  invoke printf,offset lpFmt,offset LOWCASE
- pop EAX
  jmp back
 back:
  ret
