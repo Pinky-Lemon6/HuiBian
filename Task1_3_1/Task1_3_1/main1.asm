@@ -34,7 +34,7 @@
  invoke ExitProcess,0
  main endp
 strcmp proc
-   push ebp
+    push ebp
 	mov ebp,esp
 	push esi
 	push edi

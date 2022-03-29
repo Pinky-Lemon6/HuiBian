@@ -29,7 +29,6 @@ source ends
  LOW_COUNT DD 0
  MID_COUNT DD 0
  HIGH_COUNT DD 0
- DATA_S source 3 DUP(<>)
  LOWF source 10000 DUP(<>)
  MIDF source 10000 DUP(<>)
  HIGHF source 10000 DUP(<>)
