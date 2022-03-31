@@ -5,6 +5,7 @@
  printf   PROTO C:ptr sbtye, :VARARG
  scanf    PROTO C:ptr sbyte, :VARARG
  copy_data PROTO:dword,:dword
+ print_F PROTO:dword,:dword
  includelib  libcmt.lib
  includelib  legacy_stdio_definitions.lib
  source struct
@@ -19,9 +20,8 @@ source ends
  lpFmt_S2 db '%s',0
  lpFmt1	db '%d',0
  lpFmt2 db '%d',0ah,0dh,0
- LOWCASE db 'Data storage area LOWF',0
- MIDCASE db 'Data storage area MIDF',0
- HIGHCASE db 'Data storage area HIGHF',0
+ SAVED_USERNAME db 'LISHIYU',0
+ SAVED_PWD	db 'U202015351',0
  IN_USERNAME db 10 dup(0),0
  IN_PWD	db 10 dup(0),0
  WELCOME1 db 'Welcome to Use!Please Log in!',0
@@ -31,25 +31,32 @@ source ends
  SUCCESS db 'OK!Welcome you:',0
  ERROR db 'Incorrect User name / Password!',0
  ATTEMPT db 'The number of attempts you have left is:',0
- SAVED_USERNAME db 'LISHIYU',0
- SAVED_PWD	db 'U202015351',0
+ NEXT db 'Please press "R" to input again or press "Q" to exit:',0
+ OUTPUT_F db 'The data in MIDF are as followed:',0
+ SEPARATOR db '-------------------',0
+ SDA_S db 'SDA:',0
+ SDB_S db 'SDB:',0
+ SDC_S db 'SDC:',0
+ THANK db 'Thanks for your use!',0
  SDA   DD ?      ;状态信息a
  SDB   DD ?      ;状态信息b
  SDC   DD ?      ;状态信息c
  JUDGE1 dd 0
- JUDGE2 DB 0
  ATT_N db 0
- DATA_N DD 10
+ DATA_N DD 3
  LOW_COUNT DD 0
  MID_COUNT DD 0
  HIGH_COUNT DD 0
  LOWF source 10000 DUP(<>)
  MIDF source 10000 DUP(<>)
  HIGHF source 10000 DUP(<>)
+ CHOICE1 db 'R',0
+ CHOICE2 db 'Q',0
+ CHOICE db 0
 
  strcmp macro x,y
 	local strcmp_start,strcmp_large,strcmp_little,strcmp_equ,strcmp_exit
-	mov JUDGE1,0
+	;mov JUDGE1,0
 	;push offset x
 	;push offset y
 	;push ebp
@@ -93,6 +100,7 @@ source ends
  function1:
 	cmp ATT_N,0
 	jz exit
+	mov JUDGE1,0
 	invoke printf,offset lpFmt_S2,offset ATTEMPT
 	invoke printf,offset lpFmt2,ATT_N
 	input_1:
@@ -100,14 +108,8 @@ source ends
 		invoke scanf,offset lpFmt_S2,offset IN_USERNAME
 		invoke printf,offset lpFmt_S1,offset MENU2
 		invoke scanf,offset lpFmt_S2,offset IN_PWD
-		;push offset SAVED_USERNAME
-		;push offset IN_USERNAME
 		strcmp SAVED_USERNAME,IN_USERNAME
-		;add esp,8
-		;push offset SAVED_PWD
-		;push offset IN_PWD
 		strcmp SAVED_PWD,IN_PWD
-		;add esp,8
 		cmp JUDGE1,0
 		jnz input_1again
 		cmp JUDGE1,0
@@ -118,21 +120,31 @@ source ends
 		jmp function1
  function2:
 		invoke printf,offset lpFmt_S2,offset SUCCESS
-		invoke printf,offset lpFmt_S2,offset IN_USERNAME
+		invoke printf,offset lpFmt_S1,offset IN_USERNAME
 		invoke printf,offset lpFmt_S1,offset WELCOME2
-		mov esi,0
+		mov ebx,0
 	input_2:
-		cmp esi,DATA_N
-		jz menu2_again
+		cmp ebx,DATA_N
+		jz output_2
 		;invoke winTimer,0
 		invoke scanf,offset lpFmt1,offset SDA
 		invoke scanf,offset lpFmt1,offset SDB
 		invoke scanf,offset lpFmt1,offset SDC
 		call judge
-		inc esi
+		inc ebx
 		jmp input_2
-	menu2_again:
-		invoke scanf,offset lpFmt_S2,offset JUDGE2
+	output_2:
+		invoke print_F,offset MIDF,MID_COUNT
+		jmp input2_again
+	input2_again:
+		invoke printf,offset lpFmt_S1,offset NEXT
+		invoke scanf,offset lpFmt_S2,offset CHOICE
+		mov esi,offset CHOICE
+		mov dl,[esi]
+		cmp dl,CHOICE1
+		jz function2
+		cmp dl,CHOICE2
+		jz exit
 	cal_f proc
 		mov eax,SDA
 		mov SDA,eax
@@ -148,24 +160,8 @@ source ends
 		add ecx,100
 		sar ecx,7
 		ret
-	cal_f endp
+		cal_f endp
 	
-	copy_data proc buf:dword,n:dword
-		mov edi,buf
-		mov eax,0
-		imul eax,n,TYPE source
-		add edi,eax
-		mov EAX,SDA
-		mov [edi].source.SDA,EAX
-		mov EAX,SDB
-		mov [edi].source.SDB,EAX
-		mov EAX,SDC
-		mov [edi].source.SDC,EAX
-		mov EAX,ecx
-		mov [edi].source.SDF,EAX
-		ret
-		copy_data endp
-
 	judge proc
 	    call cal_f
 		;mov ecx,SDA
@@ -186,28 +182,66 @@ source ends
 	equal:
 		invoke copy_data,offset MIDF,MID_COUNT
 		inc MID_COUNT
-		;invoke printf,offset lpFmt2,[edi].source.SDF
-		;invoke printf,offset lpFmt,offset MIDCASE
-		;add edi,TYPE source
 		jmp back
 	greater:
 		invoke copy_data,offset HIGHF,HIGH_COUNT
 		inc HIGH_COUNT
-		;invoke printf,offset lpFmt2,[edi].source.SDF
-		;invoke printf,offset lpFmt,offset HIGHCASE
-		;add edi,TYPE source
 		jmp back
 	litter:
 		invoke copy_data,offset LOWF,LOW_COUNT
 		inc LOW_COUNT
-		;invoke printf,offset lpFmt2,[edi].source.SDF
-		;invoke printf,offset lpFmt,offset LOWCASE
-		;add edi,TYPE source
 		jmp back
 	back:
 		ret
 	judge endp
+	
  exit:
 	invoke ExitProcess,0
  main endp
+
+ copy_data proc buf:dword,n:dword
+	mov edi,buf
+	mov eax,0
+	imul eax,n,TYPE source
+	add edi,eax
+	mov EAX,SDA
+	mov [edi].source.SDA,EAX
+	mov EAX,SDB
+	mov [edi].source.SDB,EAX
+	mov EAX,SDC
+	mov [edi].source.SDC,EAX
+	mov EAX,ecx
+	mov [edi].source.SDF,EAX
+	ret
+	copy_data endp
+
+ print_F proc buf:dword,d_n:dword
+		local n:dword
+		push edi
+		push edx
+		mov edi,buf
+		mov n,0
+		invoke printf,offset lpFmt_S1,offset OUTPUT_F
+		lopa:
+		    mov edx,n
+			cmp edx,d_n
+			jz print_exit
+			;mov eax,0
+			;imul eax,n,TYPE source
+			invoke printf,offset lpFmt_S1,offset SEPARATOR
+			invoke printf,offset lpFmt_S2,offset SDA_S
+			invoke printf,offset lpFmt2,[edi].source.SDA
+			invoke printf,offset lpFmt_S2,offset SDB_S
+			invoke printf,offset lpFmt2,[edi].source.SDB
+			invoke printf,offset lpFmt_S2,offset SDC_S
+			invoke printf,offset lpFmt2,[edi].source.SDC
+			;invoke printf,offset lpFmt2,[edi].source.SDF
+			add edi,TYPE source
+			inc n
+			jmp lopa
+		print_exit:
+			pop edi
+			pop edx
+			ret
+		print_F endp
  end
