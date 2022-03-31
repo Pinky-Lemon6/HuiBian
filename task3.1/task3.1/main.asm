@@ -33,6 +33,7 @@ source ends
  SDB   DD ?      ;状态信息b
  SDC   DD ?      ;状态信息c
  JUDGE1 dd 0
+ JUDGE2 DB 0
  ATT_N db 0
  DATA_N DD 10
  LOW_COUNT DD 0
@@ -44,24 +45,25 @@ source ends
 
  strcmp macro x,y
 	local strcmp_start,strcmp_large,strcmp_little,strcmp_equ,strcmp_exit
-	mov ecx,offset x
-	mov ebx,offset y
-	push ebp
-	mov ebp,esp
-	push esi
-	push edi
-	push edx
-	mov edi,[ebx]
-	mov esi,[ecx]
+	mov JUDGE1,0
+	;push offset x
+	;push offset y
+	;push ebp
+	;mov ebp,esp
+	;push esi
+	;push edi
+	;push edx
+	mov edi,offset y
+	mov esi,offset x
  strcmp_start:
-    mov edx,[edi]
-	cmp edx,[esi]
+    mov dl,[edi]
+	cmp dl,[esi]
 	ja strcmp_large
 	jb strcmp_little
-	cmp edx,0
+	cmp dl,0
 	je strcmp_equ
-	add esi,2
-	add edi,2
+	inc esi
+	inc edi
 	jmp strcmp_start
  strcmp_large:
     mov eax,1
@@ -73,10 +75,10 @@ source ends
     mov eax,0
  strcmp_exit:
 	or JUDGE1,eax
-    pop edx
-	pop edi
-	pop esi
-	pop ebp
+    ;pop edx
+	;pop edi
+	;pop esi
+	;pop ebp
 	endm
 
  .STACK 200
@@ -129,7 +131,7 @@ source ends
 		inc esi
 		jmp input_2
 	menu2_again:
-		
+		invoke scanf,offset lpFmt_S2,offset JUDGE2
 	judge proc
 		mov ecx,SDA
 		imul ecx,5
