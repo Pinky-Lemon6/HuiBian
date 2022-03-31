@@ -4,6 +4,7 @@
  includelib  kernel32.lib  ; ExitProcess 在 kernel32.lib中实现
  printf   PROTO C:ptr sbtye, :VARARG
  scanf    PROTO C:ptr sbyte, :VARARG
+ copy_data PROTO:dword,:dword
  includelib  libcmt.lib
  includelib  legacy_stdio_definitions.lib
  source struct
@@ -23,8 +24,11 @@ source ends
  HIGHCASE db 'Data storage area HIGHF',0
  IN_USERNAME db 10 dup(0),0
  IN_PWD	db 10 dup(0),0
- MENU1 db 'Please input your user name:',0
- MENU2	db 'Please input your password:',0
+ WELCOME1 db 'Welcome to Use!Please Log in!',0
+ WELCOME2 db 'Please input your data:',0
+ MENU1 db 'Please input your user name:(No more than 10 characters)',0
+ MENU2	db 'Please input your password:(No more than 10 characters)',0
+ SUCCESS db 'OK!Welcome you:',0
  ERROR db 'Incorrect User name / Password!',0
  ATTEMPT db 'The number of attempts you have left is:',0
  SAVED_USERNAME db 'LISHIYU',0
@@ -85,6 +89,7 @@ source ends
  .CODE
  main proc c
 	mov ATT_N,3
+	invoke printf,offset lpFmt_S1,offset WELCOME1
  function1:
 	cmp ATT_N,0
 	jz exit
@@ -112,6 +117,9 @@ source ends
 		dec ATT_N
 		jmp function1
  function2:
+		invoke printf,offset lpFmt_S2,offset SUCCESS
+		invoke printf,offset lpFmt_S2,offset IN_USERNAME
+		invoke printf,offset lpFmt_S1,offset WELCOME2
 		mov esi,0
 	input_2:
 		cmp esi,DATA_N
@@ -120,19 +128,18 @@ source ends
 		invoke scanf,offset lpFmt1,offset SDA
 		invoke scanf,offset lpFmt1,offset SDB
 		invoke scanf,offset lpFmt1,offset SDC
+		call judge
+		inc esi
+		jmp input_2
+	menu2_again:
+		invoke scanf,offset lpFmt_S2,offset JUDGE2
+	cal_f proc
 		mov eax,SDA
 		mov SDA,eax
 		mov eax,SDB
 		mov SDB,eax
 		mov eax,SDC
 		mov SDC,eax
-		mov ebx,0
-		call judge
-		inc esi
-		jmp input_2
-	menu2_again:
-		invoke scanf,offset lpFmt_S2,offset JUDGE2
-	judge proc
 		mov ecx,SDA
 		imul ecx,5
 		add ecx,SDB
@@ -140,6 +147,34 @@ source ends
 		sub ecx,eax
 		add ecx,100
 		sar ecx,7
+		ret
+	cal_f endp
+	
+	copy_data proc buf:dword,n:dword
+		mov edi,buf
+		mov eax,0
+		imul eax,n,TYPE source
+		add edi,eax
+		mov EAX,SDA
+		mov [edi].source.SDA,EAX
+		mov EAX,SDB
+		mov [edi].source.SDB,EAX
+		mov EAX,SDC
+		mov [edi].source.SDC,EAX
+		mov EAX,ecx
+		mov [edi].source.SDF,EAX
+		ret
+		copy_data endp
+
+	judge proc
+	    call cal_f
+		;mov ecx,SDA
+		;imul ecx,5
+		;add ecx,SDB
+		;mov eax,SDC
+		;sub ecx,eax
+		;add ecx,100
+		;sar ecx,7
 		;mov eax,ecx
 		;invoke printf,offset lpFmt1,ecx
 		cmp ecx,100
@@ -149,54 +184,21 @@ source ends
 		cmp ecx,100
 		jz equal
 	equal:
-		mov edi,offset MIDF
-		mov eax,0
-		imul eax,MID_COUNT,TYPE source
-		add edi,eax
-		mov EAX,SDA
-		mov [edi].source.SDA,EAX
-		mov EAX,SDB
-		mov [edi].source.SDB,EAX
-		mov EAX,SDC
-		mov [edi].source.SDC,EAX
-		mov EAX,ecx
-		mov [edi].source.SDF,EAX
+		invoke copy_data,offset MIDF,MID_COUNT
 		inc MID_COUNT
 		;invoke printf,offset lpFmt2,[edi].source.SDF
 		;invoke printf,offset lpFmt,offset MIDCASE
 		;add edi,TYPE source
 		jmp back
 	greater:
-		mov edi,offset HIGHF
-		mov eax,0
-		imul eax,HIGH_COUNT,TYPE source
-		add edi,eax
-		mov EAX,SDA
-		mov [edi].source.SDA,EAX
-		mov EAX,SDB
-		mov [edi].source.SDB,EAX
-		mov EAX,SDC
-		mov [edi].source.SDC,EAX
-		mov EAX,ecx
-		mov [edi].source.SDF,EAX
+		invoke copy_data,offset HIGHF,HIGH_COUNT
 		inc HIGH_COUNT
 		;invoke printf,offset lpFmt2,[edi].source.SDF
 		;invoke printf,offset lpFmt,offset HIGHCASE
 		;add edi,TYPE source
 		jmp back
 	litter:
-		mov edi,offset LOWF
-		mov eax,0
-		imul eax,LOW_COUNT,TYPE source
-		add edi,eax
-		mov EAX,SDA
-		mov [edi].source.SDA,EAX
-		mov EAX,SDB
-		mov [edi].source.SDB,EAX
-		mov EAX,SDC
-		mov [edi].source.SDC,EAX
-		mov EAX,ecx
-		mov [edi].source.SDF,EAX
+		invoke copy_data,offset LOWF,LOW_COUNT
 		inc LOW_COUNT
 		;invoke printf,offset lpFmt2,[edi].source.SDF
 		;invoke printf,offset lpFmt,offset LOWCASE
