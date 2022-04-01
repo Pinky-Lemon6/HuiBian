@@ -8,6 +8,7 @@
  print_F PROTO:dword,:dword
  includelib  libcmt.lib
  includelib  legacy_stdio_definitions.lib
+ include winTimer.asm
  source struct
 	SAMID DB 9 DUP(0)   ;每组数据的流水号（可以从1开始编号）
 	SDA   DD ?      ;状态信息a
@@ -34,16 +35,18 @@ source ends
  NEXT db 'Please press "R" to input again or press "Q" to exit:',0
  OUTPUT_F db 'The data in MIDF are as followed:',0
  SEPARATOR db '-------------------',0
+ SAMID_S db 'SAMID:',0
  SDA_S db 'SDA:',0
  SDB_S db 'SDB:',0
  SDC_S db 'SDC:',0
  THANK db 'Thanks for your use!',0
+ SAMID db 9 DUP(0)  ;当前数据编号
  SDA   DD ?      ;状态信息a
  SDB   DD ?      ;状态信息b
  SDC   DD ?      ;状态信息c
  JUDGE1 dd 0
  ATT_N db 0
- DATA_N DD 3
+ DATA_N DD 10
  LOW_COUNT DD 0
  MID_COUNT DD 0
  HIGH_COUNT DD 0
@@ -119,6 +122,7 @@ source ends
 		dec ATT_N
 		jmp function1
  function2:
+		invoke winTimer,0
 		invoke printf,offset lpFmt_S2,offset SUCCESS
 		invoke printf,offset lpFmt_S1,offset IN_USERNAME
 		invoke printf,offset lpFmt_S1,offset WELCOME2
@@ -126,15 +130,16 @@ source ends
 	input_2:
 		cmp ebx,DATA_N
 		jz output_2
-		;invoke winTimer,0
 		invoke scanf,offset lpFmt1,offset SDA
 		invoke scanf,offset lpFmt1,offset SDB
 		invoke scanf,offset lpFmt1,offset SDC
+		inc SAMID
 		call judge
 		inc ebx
 		jmp input_2
 	output_2:
 		invoke print_F,offset MIDF,MID_COUNT
+		invoke winTimer,1
 		jmp input2_again
 	input2_again:
 		invoke printf,offset lpFmt_S1,offset NEXT
@@ -204,6 +209,8 @@ source ends
 	mov eax,0
 	imul eax,n,TYPE source
 	add edi,eax
+	mov dl,SAMID
+	mov [edi].source.SAMID,dl
 	mov EAX,SDA
 	mov [edi].source.SDA,EAX
 	mov EAX,SDB
@@ -229,6 +236,8 @@ source ends
 			;mov eax,0
 			;imul eax,n,TYPE source
 			invoke printf,offset lpFmt_S1,offset SEPARATOR
+			invoke printf,offset lpFmt_S2,offset SAMID_S
+			invoke printf,offset lpFmt2,[edi].source.SAMID
 			invoke printf,offset lpFmt_S2,offset SDA_S
 			invoke printf,offset lpFmt2,[edi].source.SDA
 			invoke printf,offset lpFmt_S2,offset SDB_S
