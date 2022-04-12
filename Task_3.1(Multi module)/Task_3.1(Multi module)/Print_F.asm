@@ -1,7 +1,6 @@
 .686P
 .MODEL FLAT,STDCALL
 printf   PROTO C:ptr sbtye, :VARARG
-extern SDA:dword,SDB:dword,SDC:dword,SAMID:byte
 extern SAMID_S:byte,SDA_S:byte,SDB_S:byte,SDC_S:byte,SEPARATOR:byte
 extern OUTPUT_F:byte,lpFmt_S1:byte,lpFmt_S2:byte,lpFmt2:byte
  source struct
@@ -12,24 +11,6 @@ extern OUTPUT_F:byte,lpFmt_S1:byte,lpFmt_S2:byte,lpFmt2:byte
 	SDF   DD ?      ;处理结果f
 source ends
 .CODE
-copy_data proc buf:dword,n:dword
-	mov edi,buf
-	mov eax,0
-	imul eax,n,TYPE source
-	add edi,eax
-	mov dl,SAMID
-	mov [edi].source.SAMID,dl
-	mov EAX,SDA
-	mov [edi].source.SDA,EAX
-	mov EAX,SDB
-	mov [edi].source.SDB,EAX
-	mov EAX,SDC
-	mov [edi].source.SDC,EAX
-	mov EAX,ecx
-	mov [edi].source.SDF,EAX
-	ret
-	copy_data endp
-
  print_F proc buf:dword,d_n:dword
 		local n:dword
 		push edi

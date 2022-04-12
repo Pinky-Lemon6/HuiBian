@@ -140,8 +140,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MASM Include="Copy_Print_F.asm" />
+    <MASM Include="Copy_Data.asm" />
     <MASM Include="main.asm" />
+    <MASM Include="Print_F.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

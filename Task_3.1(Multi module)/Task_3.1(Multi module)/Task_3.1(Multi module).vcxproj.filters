@@ -18,7 +18,10 @@
     <MASM Include="main.asm">
       <Filter>源文件</Filter>
     </MASM>
-    <MASM Include="Copy_Print_F.asm">
+    <MASM Include="Copy_Data.asm">
+      <Filter>资源文件</Filter>
+    </MASM>
+    <MASM Include="Print_F.asm">
       <Filter>资源文件</Filter>
     </MASM>
   </ItemGroup>
