@@ -17,21 +17,18 @@ int DATA_N = 10;
 void copy_data(int*, int,int,int,int,int);
 void cal_f(int, int, int, int*);
 void modify();
-void judge(int sda, int sdb, int sdc,int n1) {
+void judge(int sda, int sdb, int sdc) {
 	int SDF=0;
 	cal_f(sda,sdb,sdc,&SDF);
 	if (SDF < 100) {
-		if(!n1) first = &LOWF[0];
 		copy_data(&LOWF, LCOUNT,sda,sdb,sdc,SDF);
 		LCOUNT++;
 	}
 	else if (SDF > 100) {
-		if (!n1) first = &HIGHF[0];
 		copy_data(&HIGHF, HCOUNT,sda,sdb,sdc,SDF);
 		HCOUNT++;
 	}
 	else {
-		if (!n1) first = &MIDF[0];
 		copy_data(&MIDF, MCOUNT,sda,sdb,sdc,SDF);
 		MCOUNT++;
 	}
@@ -57,7 +54,7 @@ int f2() {
 		int i=0;
 		for(i = 0; i < DATA_N; i++) {
 			scanf_s("%d%d%d", &SDA, &SDB, &SDC);
-			judge(SDA, SDB, SDC,i);
+			judge(SDA, SDB, SDC);
 		}
 		print_F(MIDF,MCOUNT);
 again2:	printf("Please press 'R' to input again or press 'Q' to exit or press 'M' to modify the first set of data:\n");
@@ -84,7 +81,20 @@ void modify() {
 	int a, b, c,f=0;
 	scanf_s("%d%d%d", &a, &b, &c);
 	cal_f(a, b, c, &f);
-	copy_data(first, 0, a, b, c, f);
+	printf("SDF of this data is:%d\n",f);
+	if (f < 100) {
+		copy_data(&LOWF, 0, a, b, c, f);
+		printf("The first data in LOWF has changed.\n");
+	}
+	else if (f > 100) {
+		copy_data(&HIGHF, 0, a, b, c, f);
+		printf("The first data in HIGHF has changed.\n");
+	}
+	else {
+		copy_data(&MIDF, 0, a, b, c, f);
+		printf("The first data in MIDF has changed.\n");
+	}
+
 }
 
 int main() {
