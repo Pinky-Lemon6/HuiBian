@@ -1,3 +1,7 @@
+;编写者：李石峪 U202015351
+;本程序由3个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm
+;本模块为主模块 main.asm，作为主函数模块
+;本模块包含以下子程序：main、judge、cal_f
 .686P
 .MODEL FLAT,STDCALL
  ExitProcess PROTO STDCALL :DWORD
@@ -11,7 +15,7 @@
  include winTimer.asm
  public SDA,SDB,SDC,SAMID
  public lpFmt_S1,lpFmt_S2,lpFmt2,OUTPUT_F
- public SAMID_S,SDA_S,SDB_S,SDC_S,SEPARATOR
+ public SAMID_S,SDA_S,SDB_S,SDC_S,SDF_S,SEPARATOR
  source struct
 	SAMID DB 9 DUP(0)   ;每组数据的流水号（可以从1开始编号）
 	SDA   DD ?      ;状态信息a
@@ -42,6 +46,7 @@ source ends
  SDA_S db 'SDA:',0
  SDB_S db 'SDB:',0
  SDC_S db 'SDC:',0
+ SDF_S db 'SDF:',0
  THANK db 'Thanks for your use!',0
  SAMID db 9 DUP(0)  ;当前数据编号
  SDA   DD ?      ;状态信息a
