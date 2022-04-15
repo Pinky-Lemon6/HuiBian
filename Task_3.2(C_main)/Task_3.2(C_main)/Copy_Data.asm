@@ -1,6 +1,5 @@
 .686P
 .MODEL FLAT,c
-;extern SDA:dword,SDB:dword,SDC:dword,SAMID:byte
 
 source struct
 	SDA DD ?

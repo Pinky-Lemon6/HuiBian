@@ -14,8 +14,7 @@
  includelib  legacy_stdio_definitions.lib
  include winTimer.asm
  public SDA,SDB,SDC,SAMID
- public lpFmt_S1,lpFmt_S2,lpFmt2,OUTPUT_F
- public SAMID_S,SDA_S,SDB_S,SDC_S,SDF_S,SEPARATOR
+ public lpFmt_S1,lpFmt_S2,lpFmt2
  source struct
 	SAMID DB 9 DUP(0)   ;每组数据的流水号（可以从1开始编号）
 	SDA   DD ?      ;状态信息a
@@ -40,13 +39,7 @@ source ends
  ERROR db 'Incorrect User name / Password!',0
  ATTEMPT db 'The number of attempts you have left is:',0
  NEXT db 'Please press "R" to input again or press "Q" to exit:',0
- OUTPUT_F db 'The data in MIDF are as followed:',0
- SEPARATOR db '-------------------',0
- SAMID_S db 'SAMID:',0
- SDA_S db 'SDA:',0
- SDB_S db 'SDB:',0
- SDC_S db 'SDC:',0
- SDF_S db 'SDF:',0
+
  THANK db 'Thanks for your use!',0
  SAMID db 9 DUP(0)  ;当前数据编号
  SDA   DD ?      ;状态信息a
@@ -147,12 +140,6 @@ source ends
 		cmp dl,CHOICE2
 		jz exit
 	cal_f proc
-		mov eax,SDA
-		mov SDA,eax
-		mov eax,SDB
-		mov SDB,eax
-		mov eax,SDC
-		mov SDC,eax
 		mov ecx,SDA
 		imul ecx,5
 		add ecx,SDB

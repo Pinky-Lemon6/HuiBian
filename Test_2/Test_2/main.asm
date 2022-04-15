@@ -20,17 +20,14 @@ lpFmt	db	"%s",0ah, 0dh, 0
 .STACK 200
 .CODE
 main proc c
-   MOV  ESI,OFFSET buf1
-   MOV  EDI,OFFSET buf2 
-   MOV  ECX,0
-L1:
-   MOV  EAX, [ESI]   ;如果总数不是12个字节，还能每次传送4个字节吗？
-   MOV  [EDI],EAX
-   ADD  ESI, 4
-   ADD  EDI, 4
-   ADD  ECX, 4
-   CMP  ECX,12
+   MOV ECX, 0
+L1:    
+   MOV AH, BUF1[ECX]
+   MOV BUF2[ECX], AH
+   ADD ECX, 1
+   CMP ECX, 12
    JNZ  L1
+
    invoke printf,offset lpFmt,OFFSET buf1
    invoke printf,offset lpFmt,OFFSET buf2
    invoke ExitProcess, 0

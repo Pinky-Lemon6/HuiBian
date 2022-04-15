@@ -1,12 +1,11 @@
 ;编写者：李石峪 U202015351
 ;本程序由3个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm
-;本模块为数据显示模块 Print_F.asm，用于显示存储区中的数据
+;本模块为数据显示模块 Print_F.asm，用于显示指定存储区中的数据
 ;本模块包含以下子程序：print_F
 .686P
 .MODEL FLAT,STDCALL
 printf   PROTO C:ptr sbtye, :VARARG
-extern SAMID_S:byte,SDA_S:byte,SDB_S:byte,SDC_S:byte,SDF_S:byte,SEPARATOR:byte
-extern OUTPUT_F:byte,lpFmt_S1:byte,lpFmt_S2:byte,lpFmt2:byte
+extern lpFmt_S1:byte,lpFmt_S2:byte,lpFmt2:byte
  source struct
 	SAMID DB 9 DUP(0)   ;每组数据的流水号（可以从1开始编号）
 	SDA   DD ?      ;状态信息a
@@ -14,6 +13,14 @@ extern OUTPUT_F:byte,lpFmt_S1:byte,lpFmt_S2:byte,lpFmt2:byte
 	SDC   DD ?      ;状态信息c
 	SDF   DD ?      ;处理结果f
 source ends
+.DATA
+ OUTPUT_F db 'The data in MIDF are as followed:',0
+ SEPARATOR db '-------------------',0
+ SAMID_S db 'SAMID:',0
+ SDA_S db 'SDA:',0
+ SDB_S db 'SDB:',0
+ SDC_S db 'SDC:',0
+ SDF_S db 'SDF:',0
 .CODE
  print_F proc buf:dword,d_n:dword
 		local n:dword
