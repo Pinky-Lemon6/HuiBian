@@ -21,22 +21,25 @@ source ends
  LOWCASE db 'Data storage area LOWF',0
  MIDCASE db 'Data storage area MIDF',0
  HIGHCASE db 'Data storage area HIGHF',0
+ WELCOME db 'PLease input 10 sets of data:',0
  SDA   DD ?      ;状态信息a
  SDB   DD ?      ;状态信息b
  SDC   DD ?      ;状态信息c
+ FLAG  DD ?
  DATA_N DD 10
- CAl_N DD 1000
+ CAl_N DD 10000000
  LOW_COUNT DD 0
  MID_COUNT DD 0
  HIGH_COUNT DD 0
- LOWF source 10000 DUP(<>)
- MIDF source 10000 DUP(<>)
- HIGHF source 10000 DUP(<>)
+ LOWF source 100 DUP(<>)
+ MIDF source 100 DUP(<>)
+ HIGHF source 100 DUP(<>)
  
  .STACK 200
  .CODE
  main proc c
  invoke winTimer,0
+ invoke printf,offset lpFmt,offset WELCOME
  mov esi,0
 outer_lopa:
  cmp esi,DATA_N
@@ -44,12 +47,6 @@ outer_lopa:
  invoke scanf,offset lpFmt1,offset SDA
  invoke scanf,offset lpFmt1,offset SDB
  invoke scanf,offset lpFmt1,offset SDC
- mov eax,SDA
- mov SDA,eax
- mov eax,SDB
- mov SDB,eax
- mov eax,SDC
- mov SDC,eax
  mov ebx,0
 inner_lopa:
  cmp ebx,CAL_N
@@ -59,6 +56,20 @@ inner_lopa:
  jmp inner_lopa
 inner_lopa_over:
  inc esi
+ cmp FLAG,0
+ jg mov_g
+ cmp FLAG,0
+ jl mov_l
+ cmp FLAG,0
+ jz mov_m
+mov_g:
+ inc HIGH_COUNT
+ jmp outer_lopa
+mov_l:
+ inc LOW_COUNT
+ jmp outer_lopa
+mov_m:
+ inc MID_COUNT
  jmp outer_lopa
 exit:
  invoke winTimer,1	;;结束计时并显示计时信息（毫秒）
@@ -67,14 +78,19 @@ exit:
 
 judge proc
  mov ecx,SDA
- imul ecx,5
+ ;imul ecx,5
+ sal ecx,2
+ add ecx,SDA
  add ecx,SDB
  mov eax,SDC
  sub ecx,eax
  add ecx,100
  sar ecx,7
  ;mov eax,ecx
- ;invoke printf,offset lpFmt1,ecx
+ ;cdq               ;将eax扩展为64位，解决溢出问题
+ ;mov edi,128
+ ;idiv edi
+ ;div ecx,128
  cmp ecx,100
  jg greater
  cmp ecx,100
@@ -94,10 +110,7 @@ equal:
  mov [edi].source.SDC,EAX
  mov EAX,ecx
  mov [edi].source.SDF,EAX
- inc MID_COUNT
- ;invoke printf,offset lpFmt2,[edi].source.SDF
- ;invoke printf,offset lpFmt,offset MIDCASE
- ;add edi,TYPE source
+ mov FLAG,0
  jmp back
 greater:
  mov edi,offset HIGHF
@@ -112,10 +125,7 @@ greater:
  mov [edi].source.SDC,EAX
  mov EAX,ecx
  mov [edi].source.SDF,EAX
- inc HIGH_COUNT
- ;invoke printf,offset lpFmt2,[edi].source.SDF
- ;invoke printf,offset lpFmt,offset HIGHCASE
- ;add edi,TYPE source
+ mov FLAG,1
  jmp back
 litter:
  mov edi,offset LOWF
@@ -130,10 +140,7 @@ litter:
  mov [edi].source.SDC,EAX
  mov EAX,ecx
  mov [edi].source.SDF,EAX
- inc LOW_COUNT
- ;invoke printf,offset lpFmt2,[edi].source.SDF
- ;invoke printf,offset lpFmt,offset LOWCASE
- ;add edi,TYPE source
+ mov FLAG,-1
  jmp back
 back:
  ret

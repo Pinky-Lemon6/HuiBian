@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*编写者：李石峪 U202015351
+本程序由3个模块组成：1.main.c 2.Cal_F.asm 3.Copy_Data.asm
+本模块为主函数模块 main.c，为程序主出入口，用于实现功能切换
+本模块包含以下子程序：void judge()、void modify()、void print_F()、int f2()*/
+
 char* SAVED_USERNAME = "LISHIYU", * SAVED_PWD = "U202015351";
 struct source {
 	// char SAMID[10];
@@ -13,7 +18,7 @@ struct source {
 struct source LOWF[10000], MIDF[10000], HIGHF[10000],*first;
 int ID=0, SDA, SDB, SDC;
 int LCOUNT, MCOUNT, HCOUNT;
-int DATA_N = 10;
+int DATA_N = 100;
 void copy_data(int*, int,int,int,int,int);
 void cal_f(int, int, int, int*);
 void modify();

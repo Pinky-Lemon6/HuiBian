@@ -1,7 +1,3 @@
-;编写者：李石峪 U202015351
-;本程序由3个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm
-;本模块为主模块 main.asm，作为主函数模块
-;本模块包含以下子程序：main、judge、cal_f
 .686P
 .MODEL FLAT,STDCALL
  ExitProcess PROTO STDCALL :DWORD
@@ -10,6 +6,7 @@
  scanf    PROTO C:ptr sbyte, :VARARG
  copy_data PROTO:dword,:dword
  print_F PROTO:dword,:dword
+ Conver PROTO:dword,:dword
  includelib  libcmt.lib
  includelib  legacy_stdio_definitions.lib
  include winTimer.asm
@@ -28,9 +25,14 @@ source ends
  lpFmt1	db '%d',0
  lpFmt2 db '%d',0ah,0dh,0
  SAVED_USERNAME db 'LISHIYU',0
- SAVED_PWD	db 'U202015351',0
+ SAVED_PWD	db 'U' XOR '3','2' XOR '1',
+				'0' XOR '5', '2' XOR '7',
+				'0' XOR '9','1' XOR '0',
+				'5' XOR '6','3' XOR '3',
+				'5' XOR '9','1' XOR '7',0
  IN_USERNAME db 10 dup(0),0
  IN_PWD	db 10 dup(0),0
+ IN_PWD1 db 10 dup(0),0
  WELCOME1 db 'Welcome to Use!Please Log in!',0
  WELCOME2 db 'Please input 100 sets of data:',0
  MENU1 db 'Please input your user name:(No more than 10 characters)',0
@@ -51,9 +53,9 @@ source ends
  LOW_COUNT DD 0
  MID_COUNT DD 0
  HIGH_COUNT DD 0
- LOWF source 1000 DUP(<>)
- MIDF source 1000 DUP(<>)
- HIGHF source 1000 DUP(<>)
+ LOWF source 100 DUP(<>)
+ MIDF source 100 DUP(<>)
+ HIGHF source 100 DUP(<>)
  CHOICE1 db 'R',0
  CHOICE2 db 'Q',0
  CHOICE db 0
@@ -100,8 +102,9 @@ source ends
 		invoke scanf,offset lpFmt_S2,offset IN_USERNAME
 		invoke printf,offset lpFmt_S1,offset MENU2
 		invoke scanf,offset lpFmt_S2,offset IN_PWD
+		invoke Conver,offset IN_PWD,offset IN_PWD1
 		strcmp SAVED_USERNAME,IN_USERNAME
-		strcmp SAVED_PWD,IN_PWD
+		strcmp SAVED_PWD,IN_PWD1
 		cmp JUDGE1,0
 		jnz input_1again
 		cmp JUDGE1,0

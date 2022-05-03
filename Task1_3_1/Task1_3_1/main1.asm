@@ -20,7 +20,7 @@
  invoke printf,offset lpFmt,offset MENU
  invoke scanf,offset lpFmt1,offset IN_PWD
  push offset SAVED_PWD
- push offset IN_PWD
+ push offset IN_PWD 
  call strcmp
  add esp,8
  cmp eax,0

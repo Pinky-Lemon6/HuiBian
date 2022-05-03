@@ -1,7 +1,3 @@
-;编写者：李石峪 U202015351
-;本程序由3个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm
-;本模块为数据显示模块 Print_F.asm，用于显示指定存储区中的数据
-;本模块包含以下子程序：print_F
 .686P
 .MODEL FLAT,STDCALL
 printf   PROTO C:ptr sbtye, :VARARG

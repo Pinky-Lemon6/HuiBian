@@ -26,19 +26,21 @@
  .STACK 200
  .CODE
  main proc c
- mov edx,SDA
- imul edx,5
- add edx,SDB
- mov eax,SDC
- sub edx,eax
- add edx,100
- sar edx,7
- mov SDF,edx
- cmp edx,100
+ mov eax,SDA
+ imul eax,5
+ add eax,SDB
+ mov edx,SDC
+ sub eax,edx
+ add eax,100
+ sar eax,7
+ ;mov edi,128
+ ;idiv edi
+ mov SDF,eax
+ cmp eax,100
  jg greater
- cmp edx,100
+ cmp eax,100
  jl litter
- cmp edx,100
+ cmp eax,100
  jz equal
 equal:
  mov ECX,SDA

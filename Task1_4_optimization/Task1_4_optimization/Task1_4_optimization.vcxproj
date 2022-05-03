@@ -24,6 +24,7 @@
     <ProjectGuid>{b7d2231f-5d84-4c59-a848-cac45ca5abb3}</ProjectGuid>
     <RootNamespace>Task14optimization</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Task2</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

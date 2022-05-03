@@ -1,3 +1,8 @@
+;编写者：李石峪 U202015351
+;本程序由3个模块组成：1.main.c 2.Cal_F.asm 3.Copy_Data.asm
+;本模块为数据复制模块 Cal_F.asm，用于计算一组输入的数据的f值
+;本模块包含以下子程序：cal_f
+
 .686P
 .MODEL FLAT,c
  extern ID:byte
@@ -5,12 +10,6 @@
  
 .CODE
 cal_f proc SDA:dword,SDB:dword,SDC:dword,buf:dword
-		mov eax,SDA
-		mov SDA,eax
-		mov eax,SDB
-		mov SDB,eax
-		mov eax,SDC
-		mov SDC,eax
 		mov ecx,SDA
 		imul ecx,5
 		add ecx,SDB
