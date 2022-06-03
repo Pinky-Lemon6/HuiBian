@@ -1,4 +1,6 @@
-;;
+;;编写者：李石峪 U202015351
+;;本程序由4个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm 4.winTimer.asm
+;;本模块为计时模块 winTimer.asm
 ;;win32汇编计时子程序
 ;;使用方法：在你的.asm文件中加入如下语句：
 ;;	include winTimer.asm
@@ -9,7 +11,9 @@
 ;;	... ...
 ;;	invoke winTimer 1	;;结束计时并显示计时信息（毫秒）
 ;;
-
+.686P
+.MODEL FLAT,STDCALL
+printf   PROTO C:ptr sbtye, :VARARG
 timeGetTime proto stdcall
 includelib  Winmm.lib
 
@@ -31,3 +35,5 @@ __L2:		mov	__t2, eax
 		invoke	printf,offset __fmtTime,eax
 		ret	4
 winTimer	endp
+
+end

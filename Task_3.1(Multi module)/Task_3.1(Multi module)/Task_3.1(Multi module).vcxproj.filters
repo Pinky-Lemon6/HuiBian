@@ -24,5 +24,8 @@
     <MASM Include="Print_F.asm">
       <Filter>资源文件</Filter>
     </MASM>
+    <MASM Include="winTimer.asm">
+      <Filter>资源文件</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

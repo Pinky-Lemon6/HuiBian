@@ -1,5 +1,5 @@
 ;编写者：李石峪 U202015351
-;本程序由3个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm
+;本程序由4个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm 4.winTimer.asm
 ;本模块为主模块 main.asm，作为主函数模块
 ;本模块包含以下子程序：main、judge、cal_f
 .686P
@@ -10,9 +10,9 @@
  scanf    PROTO C:ptr sbyte, :VARARG
  copy_data PROTO:dword,:dword
  print_F PROTO:dword,:dword
+ winTimer PROTO stdcall,:dword
  includelib  libcmt.lib
  includelib  legacy_stdio_definitions.lib
- include winTimer.asm
  public SDA,SDB,SDC,SAMID
  public lpFmt_S1,lpFmt_S2,lpFmt2
  source struct

@@ -1,5 +1,5 @@
 ;编写者：李石峪 U202015351
-;本程序由3个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm
+;本程序由4个模块组成：1.main.asm 2.Print_F.asm 3.Copy_Data.asm 4.winTimer.asm
 ;本模块为数据复制模块 Copy_Data.asm，用于将数据复制到指定存储区
 ;本模块包含以下子程序：copy_data
 .686P

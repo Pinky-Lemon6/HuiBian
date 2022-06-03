@@ -143,6 +143,9 @@
     <MASM Include="Copy_Data.asm" />
     <MASM Include="main.asm" />
     <MASM Include="Print_F.asm" />
+    <MASM Include="winTimer.asm">
+      <DeploymentContent>false</DeploymentContent>
+    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
